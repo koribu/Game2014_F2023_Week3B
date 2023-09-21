@@ -30,8 +30,8 @@ public class PlayerBehavour : MonoBehaviour
         foreach(Touch touch in Input.touches)
         {
             Vector2 destination = _camera.ScreenToWorldPoint(touch.position);
-            transform.position = destination;
-            
+            //transform.position = destination;
+            transform.position = Vector2.Lerp(transform.position, destination, _speed * Time.deltaTime);
         }
 
 
