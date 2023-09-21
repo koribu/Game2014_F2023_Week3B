@@ -12,33 +12,63 @@ public class PlayerBehavour : MonoBehaviour
 
     Camera _camera;
 
+    Vector2 destination;
+
+    [SerializeField]
+    bool _isMobilePlatform = false;
+
         // Start is called before the first frame update
     void Start()
     {
         _camera = Camera.main;
+
+        _isMobilePlatform = Application.platform == RuntimePlatform.Android ||
+                            Application.platform == RuntimePlatform.IPhonePlayer;
     }
 
     // Update is called once per frame
     void Update()
     {
- /*       float xAxis = Input.GetAxisRaw("Horizontal") * _speed * Time.deltaTime;
+        if(_isMobilePlatform)
+            GetTouchScreenInput();
+        else
+            GetTraditionalInput();
+        
+        Move();
+        CheckBoundries();
+ 
+    }
+
+    void GetTouchScreenInput()
+    {
+
+        foreach (Touch touch in Input.touches)
+        {
+            destination = _camera.ScreenToWorldPoint(touch.position);
+            destination = Vector2.Lerp(transform.position, destination, _speed * Time.deltaTime);
+
+        }
+    }
+
+    void GetTraditionalInput()
+    {
+        float xAxis = Input.GetAxisRaw("Horizontal") * _speed * Time.deltaTime;
         float yAxis = Input.GetAxisRaw("Vertical") * _speed * Time.deltaTime;
 
-        transform.position = new Vector3(transform.position.x + xAxis, transform.position.y + yAxis, 0); //new Vector3(xAxis, yAxis, 0);*/
+        destination = new Vector2(transform.position.x + xAxis, transform.position.y + yAxis);
 
+    }
 
-        foreach(Touch touch in Input.touches)
-        {
-            Vector2 destination = _camera.ScreenToWorldPoint(touch.position);
-            //transform.position = destination;
-            transform.position = Vector2.Lerp(transform.position, destination, _speed * Time.deltaTime);
-        }
+    void Move()
+    {
+        Debug.Log(destination);
+        transform.position = destination;
+    }
 
-
-
-
+    void CheckBoundries()
+    {
         //Boundries
-        if(transform.position.x < _horizontalBoundries.min)
+        if (transform.position.x < _horizontalBoundries.min)
         {
             transform.position = new Vector3(_horizontalBoundries.max, transform.position.y, transform.position.z);
         }
@@ -48,7 +78,7 @@ public class PlayerBehavour : MonoBehaviour
             transform.position = new Vector3(_horizontalBoundries.min, transform.position.y, transform.position.z);
         }
 
-        if(transform.position.y > _verticalBoundries.max)
+        if (transform.position.y > _verticalBoundries.max)
         {
             transform.position = new Vector3(transform.position.x, _verticalBoundries.max);
         }
@@ -56,7 +86,7 @@ public class PlayerBehavour : MonoBehaviour
         if (transform.position.y < _verticalBoundries.min)
         {
             transform.position = new Vector3(transform.position.x, _verticalBoundries.min, 5);
-          
+
         }
     }
 }
