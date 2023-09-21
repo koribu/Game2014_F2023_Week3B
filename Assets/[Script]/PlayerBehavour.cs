@@ -61,7 +61,6 @@ public class PlayerBehavour : MonoBehaviour
 
     void Move()
     {
-        Debug.Log(destination);
         transform.position = destination;
     }
 
@@ -87,6 +86,14 @@ public class PlayerBehavour : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, _verticalBoundries.min, 5);
 
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Enemy"))
+        {
+            Debug.Log("I Got HIT!!!");
         }
     }
 }
